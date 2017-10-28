@@ -1,0 +1,25 @@
+{
+  "name": "microschema",
+  "version": "1.0.0",
+  "description": "Helper library to create JSON Schemas in a concise way.",
+  "main": "index.js",
+  "scripts": {
+    "test": "ava test.js && eslint ."
+  },
+  "files": ["index.js"],
+  "keywords": [
+    "JSON Schema",
+    "json-schema",
+    "json",
+    "schema",
+    "validation"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "ava": "^0.23.0",
+    "eslint": "^4.10.0"
+  },
+  "ava": {
+    "failWithoutAssertions": false
+  }
+}
