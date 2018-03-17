@@ -69,6 +69,61 @@ test('arrayOf() creates an array with a type of its items', function (t) {
   })
 })
 
+test('string() creates a type string', function (t) {
+  const schema = ms.string()
+  assert.deepEqual(schema, {type: 'string'})
+})
+
+test('required.string() creates a required string', function (t) {
+  const schema = ms.obj({
+    foo: ms.required.string()
+  })
+  assert.deepEqual(schema, {
+    type: 'object',
+    required: ['foo'],
+    properties: {
+      foo: {
+        type: 'string'
+      }
+    }
+  })
+})
+
+test('string({pattern}) adds a regex pattern', function (t) {
+  const schema = ms.string({
+    pattern: '[a-z]+'
+  })
+
+  assert.deepEqual(schema, {
+    type: 'string',
+    pattern: '[a-z]+'
+  })
+})
+
+test('string({pattern}) accepts a javascript regex', function (t) {
+  const schema = ms.string({
+    pattern: /[a-z]+/
+  })
+
+  assert.deepEqual(schema, {
+    type: 'string',
+    pattern: '[a-z]+'
+  })
+})
+
+test('string({pattern}) does not accept a javascript regex with flags', function (t) {
+  const method = () => {
+    ms.string({pattern: /[a-z]+/i})
+  }
+
+  assert.throws(method, (err) => {
+    assert.equal(err.message,
+      'JSON schema does not support regexp flags: /[a-z]+/i')
+
+    return true
+  })
+})
+
 test('number() creates a type number', function (t) {
   const schema = ms.number()
   assert.deepEqual(schema, {type: 'number'})

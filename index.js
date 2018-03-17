@@ -102,6 +102,22 @@ module.exports = {
     })
   },
 
+  string ({pattern} = {}) {
+    const s = {type: 'string'}
+    if (pattern) {
+      if (pattern instanceof RegExp) {
+        if (pattern.flags) {
+          throw new Error('JSON schema does not support regexp flags: ' +
+            `${pattern}`)
+        }
+        s.pattern = pattern.source
+      } else {
+        s.pattern = pattern
+      }
+    }
+    return this.decorate(s)
+  },
+
   number ({min, max, integer} = {}) {
     const type = integer ? 'integer' : 'number'
     const s = {type: type}
