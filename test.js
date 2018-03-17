@@ -152,6 +152,11 @@ test('integer() creates a type integer with min and max', function (t) {
   })
 })
 
+test('boolean() creates a type boolean', function (t) {
+  const schema = ms.boolean()
+  assert.deepEqual(schema, {type: 'boolean'})
+})
+
 test('chaining creates a chain object', function (t) {
   const chain = ms.required
   assert.ok(chain.strictObj instanceof Function)

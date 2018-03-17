@@ -131,6 +131,10 @@ module.exports = {
     return this.number(opts)
   },
 
+  boolean () {
+    return this.decorate({type: 'boolean'})
+  },
+
   decorate (obj) {
     if (this[isRequired]) obj[isRequired] = true
     return obj
