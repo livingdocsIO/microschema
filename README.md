@@ -33,7 +33,7 @@ ms.strictObj({
 
 ## Strings
 
-Using the ms.string() method
+Using the `ms.string()` method:
 ```js
 ms.string()
 output = {type: 'string'})
@@ -42,13 +42,16 @@ output = {type: 'string'})
 ```js
 ms.string({pattern: '[a-z]+'})
 
+// Passing a javascript RegExp is equivalent to the above
+ms.string({pattern: /[a-z]+/})
+
 output = {
   type: 'string',
   pattern: '[a-z]+'
 }
 ```
 
-Setting the required flag (only possible within an object)
+Setting the required flag (only possible within an object):
 ```js
 ms.obj({
   foo: ms.required.string()
@@ -65,7 +68,7 @@ output = {
 }
 ```
 
-Simplified usage within objects
+Simplified usage within objects:
 ```js
 ms.obj({
   foo: 'string'
@@ -99,14 +102,14 @@ output = {
 
 ## Numbers and Integers
 
-Simplified usage within objects
+Simplified usage within objects:
 ```js
 ms.obj({
   foo: 'string'
 })
 ```
 
-Using the ms.number() method
+Using the `ms.number()` method:
 ```js
 ms.number()
 output = {type: 'number'}
@@ -122,7 +125,7 @@ output = {
 }
 ```
 
-Using the ms.integer() method
+Using the `ms.integer()` method:
 ```js
 ms.integer()
 output = {type: 'integer'}
@@ -138,7 +141,7 @@ ms.boolean()
 output = {type: 'boolean'})
 ```
 
-Simplified usage within objects
+Simplified usage within objects:
 ```js
 ms.obj({
   foo: 'boolean:required'
@@ -162,21 +165,20 @@ ms.obj()
 output = {type: 'object'}
 ```
 
-Don't allow additional properties with `strictObj()`
+Don't allow additional properties with `strictObj()`:
 ```js
 ms.strictObj({
   count: ms.integer()
 })
 
 output = {
-  type: 'object'
-  additionalProperties: false
+  type: 'object',
+  additionalProperties: false,
   properties: {
     count: {type: 'integer'}
   }
 }
 ```
-
 
 ## Arrays
 
@@ -194,7 +196,7 @@ output = {
 
 ```js
 // All values in an enumeration must be of the same type.
-ms.required.enum('foo', 'bar')
+ms.enum('foo', 'bar')
 
 output = {
   type: 'string',
