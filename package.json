@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Helper library to create JSON Schemas in a concise way.",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "//github.com/upfrontIO/microschema"
+  },
   "scripts": {
     "test": "ava test.js && eslint ."
   },
