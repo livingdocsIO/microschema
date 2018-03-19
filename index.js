@@ -107,8 +107,7 @@ module.exports = {
     if (pattern) {
       if (pattern instanceof RegExp) {
         if (pattern.flags) {
-          throw new Error('JSON schema does not support regexp flags: ' +
-            `${pattern}`)
+          throw new Error(`JSON schema does not support regexp flags: ${pattern}`)
         }
         s.pattern = pattern.source
       } else {
