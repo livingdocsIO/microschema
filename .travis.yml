@@ -1,0 +1,12 @@
+dist: trusty
+language: node_js
+node_js:
+  - 8
+notifications:
+  email: false
+install:
+  - npm install -g npm@"$(jq -r '.engines.npm' package.json)"
+  - npm install
+script:
+  - npm ls
+  - npm test
