@@ -100,7 +100,7 @@ output = {
 }
 ```
 
-## Numbers and Integers
+## Numbers and Integers
 
 Simplified usage within objects:
 ```js
