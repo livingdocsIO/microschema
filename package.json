@@ -8,7 +8,8 @@
     "url": "https://github.com/upfrontIO/microschema"
   },
   "scripts": {
-    "test": "ava test.js && eslint ."
+    "test": "ava test.js && eslint .",
+    "test:ci": "ava test.js"
   },
   "files": ["index.js"],
   "keywords": [
@@ -21,8 +22,7 @@
   "license": "MIT",
   "devDependencies": {
     "ava": "^0.25.0",
-    "eslint": "^4.19.0",
-    "semantic-release": "15.1.3"
+    "eslint": "^4.19.1"
   },
   "engines": {
     "node": ">=8.9.0",
