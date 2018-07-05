@@ -60,6 +60,14 @@ test('enum() creates an enum from an array', function (t) {
   })
 })
 
+test('const() creates a const value', function (t) {
+  const schema = ms.const('foo')
+  assert.deepEqual(schema, {
+    type: 'string',
+    const: 'foo'
+  })
+})
+
 
 test('arrayOf() creates an array with a type of its items', function (t) {
   const schema = ms.arrayOf('integer')

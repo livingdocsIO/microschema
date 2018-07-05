@@ -87,6 +87,14 @@ module.exports = {
     })
   },
 
+
+  const (value) {
+    return this.decorate({
+      type: getJsonType(value),
+      const: value
+    })
+  },
+
   // @param schemaOrType
   //  Pass in either a string or an object:
   //  1. {String} A json schema type. E.g. 'string'

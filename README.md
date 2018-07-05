@@ -203,3 +203,16 @@ output = {
   enum: ['foo', 'bar']
 }
 ```
+
+## Constant Value
+
+```js
+ms.const('foo')
+
+// The output is the same as ms.enum('foo') as there is no equivalent
+// to value in JSON schema.
+output = {
+  type: 'string',
+  const: 'foo'
+}
+```
