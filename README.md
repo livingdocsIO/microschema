@@ -51,6 +51,30 @@ output = {
 }
 ```
 
+Specifying a format:
+```js
+ms.string({format: 'email'})
+
+output = {
+  type: 'string',
+  format: 'email'
+}
+```
+Note: Check which formats are available with your JSON Schema
+implementation before using this.
+
+
+Specifying min and max length:
+```js
+ms.string({minLength: 3, maxLength: 50})
+
+output = {
+  type: 'string',
+  minLength: 3,
+  maxLength: 50
+}
+```
+
 Setting the required flag (only possible within an object):
 ```js
 ms.obj({
@@ -180,6 +204,22 @@ output = {
 }
 ```
 
+Add title and description:
+```js
+ms.obj({
+  displayName: 'string',
+}, {title: 'Title', description: 'Desc.'})
+```
+
+Add dependencies:
+```js
+ms.obj({
+  creditCard: 'string',
+  address: 'string'
+}, {dependencies: {creditCard: 'address'}})
+```
+
+
 ## Arrays
 
 ```js
@@ -191,6 +231,18 @@ output = {
 }
 ```
 
+You can use these additional modifiers:
+```js
+ms.arrayOf(ms.string(), {minItems: 1, maxItems: 3, uniqueItems: true})
+
+output = {
+  type: 'array',
+  items: {type: 'string'},
+  minItems: 1,
+  maxItems: 3,
+  uniqueItems: true
+}
+```
 
 ## Enumerations
 
@@ -201,5 +253,18 @@ ms.enum('foo', 'bar')
 output = {
   type: 'string',
   enum: ['foo', 'bar']
+}
+```
+
+## Constant Value
+
+```js
+ms.const('foo')
+
+// The output is the same as ms.enum('foo') as there is no equivalent
+// to value in JSON schema.
+output = {
+  type: 'string',
+  const: 'foo'
 }
 ```

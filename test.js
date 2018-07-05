@@ -2,6 +2,44 @@ const ms = require('./index')
 const test = require('ava').test
 const assert = require('assert')
 
+test('obj() creates an object with title and description', function (t) {
+  const schema = ms.obj({
+    displayName: 'string'
+  }, {
+    title: 'Title',
+    description: 'Desc.'
+  })
+
+  assert.deepEqual(schema, {
+    type: 'object',
+    properties: {
+      displayName: {type: 'string'}
+    },
+    title: 'Title',
+    description: 'Desc.'
+  })
+})
+
+test('obj() creates an object with dependencies', function (t) {
+  const schema = ms.obj({
+    name: 'string',
+    displayName: 'string'
+  }, {
+    dependencies: {name: 'displayName'}
+  })
+
+  assert.deepEqual(schema, {
+    type: 'object',
+    properties: {
+      name: {type: 'string'},
+      displayName: {type: 'string'}
+    },
+    dependencies: {
+      name: ['displayName']
+    }
+  })
+})
+
 test('strictObj() creates an object with a single property', function (t) {
   const schema = ms.strictObj({foo: 'string'})
 
@@ -60,12 +98,37 @@ test('enum() creates an enum from an array', function (t) {
   })
 })
 
+test('const() creates a const value', function (t) {
+  const schema = ms.const('foo')
+  assert.deepEqual(schema, {
+    type: 'string',
+    const: 'foo'
+  })
+})
+
 
 test('arrayOf() creates an array with a type of its items', function (t) {
   const schema = ms.arrayOf('integer')
   assert.deepEqual(schema, {
     type: 'array',
     items: {type: 'integer'}
+  })
+})
+
+
+test('arrayOf() creates an array with additional properties', function (t) {
+  const schema = ms.arrayOf(ms.string(), {
+    minItems: 1,
+    maxItems: 3,
+    uniqueItems: true
+  })
+
+  assert.deepEqual(schema, {
+    type: 'array',
+    items: {type: 'string'},
+    minItems: 1,
+    maxItems: 3,
+    uniqueItems: true
   })
 })
 
@@ -121,6 +184,26 @@ test('string({pattern}) does not accept a javascript regex with flags', function
       'JSON schema does not support regexp flags: /[a-z]+/i')
 
     return true
+  })
+})
+
+
+test('string({format}) adds a format', function (t) {
+  const schema = ms.string({format: 'email'})
+
+  assert.deepEqual(schema, {
+    type: 'string',
+    format: 'email'
+  })
+})
+
+test('string({minLength, maxLength}) adds these properties', function (t) {
+  const schema = ms.string({minLength: 3, maxLength: 50})
+
+  assert.deepEqual(schema, {
+    type: 'string',
+    minLength: 3,
+    maxLength: 50
   })
 })
 

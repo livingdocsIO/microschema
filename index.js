@@ -33,13 +33,16 @@ module.exports = {
   // Methods
   // -------
 
-  obj (microschema = {}, {strict, required} = {}) {
+  obj (microschema = {}, {strict, required, title, description, dependencies} = {}) {
     const jsonSchema = {
       type: 'object',
       properties: {}
     }
 
+    if (title) jsonSchema.title = title
+    if (description) jsonSchema.description = description
     if (strict) jsonSchema.additionalProperties = false
+    if (dependencies) setDependencies(jsonSchema, dependencies)
 
     if (required) {
       if (!Array.isArray(required)) throw new Error("'required' must be an array")
@@ -87,22 +90,35 @@ module.exports = {
     })
   },
 
+
+  const (value) {
+    return this.decorate({
+      type: getJsonType(value),
+      const: value
+    })
+  },
+
   // @param schemaOrType
   //  Pass in either a string or an object:
   //  1. {String} A json schema type. E.g. 'string'
   //     Example: microschema.arrayOf('string')
   //  2. {Object} JSON Schema
   //     Example: microschema.arrayOf({type: 'object', properties: {...}})
-  arrayOf (schemaOrType) {
+  arrayOf (schemaOrType, {minItems, maxItems, uniqueItems} = {}) {
     const items = isString(schemaOrType) ? {type: schemaOrType} : schemaOrType
-
-    return this.decorate({
+    const s = this.decorate({
       type: 'array',
       items: items
     })
+
+    if (minItems) s.minItems = minItems
+    if (maxItems) s.maxItems = maxItems
+    if (uniqueItems) s.uniqueItems = uniqueItems
+
+    return s
   },
 
-  string ({pattern} = {}) {
+  string ({pattern, format, minLength, maxLength} = {}) {
     const s = {type: 'string'}
     if (pattern) {
       if (pattern instanceof RegExp) {
@@ -114,6 +130,11 @@ module.exports = {
         s.pattern = pattern
       }
     }
+
+    if (format) s.format = format
+    if (minLength) s.minLength = minLength
+    if (maxLength) s.maxLength = maxLength
+
     return this.decorate(s)
   },
 
@@ -177,4 +198,13 @@ function isString (str) {
 
 function isNumber (nr) {
   return typeof nr === 'number'
+}
+
+function setDependencies (jsonSchema, dependencies) {
+  const formattedDeps = {}
+  for (const prop in dependencies) {
+    const value = dependencies[prop]
+    formattedDeps[prop] = isString(value) ? [value] : value
+  }
+  jsonSchema.dependencies = formattedDeps
 }
