@@ -33,13 +33,16 @@ module.exports = {
   // Methods
   // -------
 
-  obj (microschema = {}, {strict, required} = {}) {
+  obj (microschema = {}, {strict, required, title, description, dependencies} = {}) {
     const jsonSchema = {
       type: 'object',
       properties: {}
     }
 
+    if (title) jsonSchema.title = title
+    if (description) jsonSchema.description = description
     if (strict) jsonSchema.additionalProperties = false
+    if (dependencies) setDependencies(jsonSchema, dependencies)
 
     if (required) {
       if (!Array.isArray(required)) throw new Error("'required' must be an array")
@@ -195,4 +198,13 @@ function isString (str) {
 
 function isNumber (nr) {
   return typeof nr === 'number'
+}
+
+function setDependencies (jsonSchema, dependencies) {
+  const formattedDeps = {}
+  for (const prop in dependencies) {
+    const value = dependencies[prop]
+    formattedDeps[prop] = isString(value) ? [value] : value
+  }
+  jsonSchema.dependencies = formattedDeps
 }

@@ -2,6 +2,44 @@ const ms = require('./index')
 const test = require('ava').test
 const assert = require('assert')
 
+test('obj() creates an object with title and description', function (t) {
+  const schema = ms.obj({
+    displayName: 'string'
+  }, {
+    title: 'Title',
+    description: 'Desc.'
+  })
+
+  assert.deepEqual(schema, {
+    type: 'object',
+    properties: {
+      displayName: {type: 'string'}
+    },
+    title: 'Title',
+    description: 'Desc.'
+  })
+})
+
+test('obj() creates an object with dependencies', function (t) {
+  const schema = ms.obj({
+    name: 'string',
+    displayName: 'string'
+  }, {
+    dependencies: {name: 'displayName'}
+  })
+
+  assert.deepEqual(schema, {
+    type: 'object',
+    properties: {
+      name: {type: 'string'},
+      displayName: {type: 'string'}
+    },
+    dependencies: {
+      name: ['displayName']
+    }
+  })
+})
+
 test('strictObj() creates an object with a single property', function (t) {
   const schema = ms.strictObj({foo: 'string'})
 

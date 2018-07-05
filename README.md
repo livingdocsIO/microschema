@@ -204,6 +204,22 @@ output = {
 }
 ```
 
+Add title and description:
+```js
+ms.obj({
+  displayName: 'string',
+}, {title: 'Title', description: 'Desc.'})
+```
+
+Add dependencies:
+```js
+ms.obj({
+  creditCard: 'string',
+  address: 'string'
+}, {dependencies: {creditCard: 'address'}})
+```
+
+
 ## Arrays
 
 ```js
