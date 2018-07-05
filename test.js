@@ -77,6 +77,23 @@ test('arrayOf() creates an array with a type of its items', function (t) {
   })
 })
 
+
+test('arrayOf() creates an array with additional properties', function (t) {
+  const schema = ms.arrayOf(ms.string(), {
+    minItems: 1,
+    maxItems: 3,
+    uniqueItems: true
+  })
+
+  assert.deepEqual(schema, {
+    type: 'array',
+    items: {type: 'string'},
+    minItems: 1,
+    maxItems: 3,
+    uniqueItems: true
+  })
+})
+
 test('string() creates a type string', function (t) {
   const schema = ms.string()
   assert.deepEqual(schema, {type: 'string'})

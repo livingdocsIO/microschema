@@ -101,13 +101,18 @@ module.exports = {
   //     Example: microschema.arrayOf('string')
   //  2. {Object} JSON Schema
   //     Example: microschema.arrayOf({type: 'object', properties: {...}})
-  arrayOf (schemaOrType) {
+  arrayOf (schemaOrType, {minItems, maxItems, uniqueItems} = {}) {
     const items = isString(schemaOrType) ? {type: schemaOrType} : schemaOrType
-
-    return this.decorate({
+    const s = this.decorate({
       type: 'array',
       items: items
     })
+
+    if (minItems) s.minItems = minItems
+    if (maxItems) s.maxItems = maxItems
+    if (uniqueItems) s.uniqueItems = uniqueItems
+
+    return s
   },
 
   string ({pattern} = {}) {

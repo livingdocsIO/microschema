@@ -191,6 +191,18 @@ output = {
 }
 ```
 
+You can use these additional modifiers:
+```js
+ms.arrayOf(ms.string(), {minItems: 1, maxItems: 3, uniqueItems: true})
+
+output = {
+  type: 'array',
+  items: {type: 'string'},
+  minItems: 1,
+  maxItems: 3,
+  uniqueItems: true
+}
+```
 
 ## Enumerations
 
