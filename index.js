@@ -115,7 +115,7 @@ module.exports = {
     return s
   },
 
-  string ({pattern} = {}) {
+  string ({pattern, format, minLength, maxLength} = {}) {
     const s = {type: 'string'}
     if (pattern) {
       if (pattern instanceof RegExp) {
@@ -127,6 +127,11 @@ module.exports = {
         s.pattern = pattern
       }
     }
+
+    if (format) s.format = format
+    if (minLength) s.minLength = minLength
+    if (maxLength) s.maxLength = maxLength
+
     return this.decorate(s)
   },
 

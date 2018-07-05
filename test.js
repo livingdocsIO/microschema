@@ -149,6 +149,26 @@ test('string({pattern}) does not accept a javascript regex with flags', function
   })
 })
 
+
+test('string({format}) adds a format', function (t) {
+  const schema = ms.string({format: 'email'})
+
+  assert.deepEqual(schema, {
+    type: 'string',
+    format: 'email'
+  })
+})
+
+test('string({minLength, maxLength}) adds these properties', function (t) {
+  const schema = ms.string({minLength: 3, maxLength: 50})
+
+  assert.deepEqual(schema, {
+    type: 'string',
+    minLength: 3,
+    maxLength: 50
+  })
+})
+
 test('number() creates a type number', function (t) {
   const schema = ms.number()
   assert.deepEqual(schema, {type: 'number'})

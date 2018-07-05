@@ -51,6 +51,30 @@ output = {
 }
 ```
 
+Specifying a format:
+```js
+ms.string({format: 'email'})
+
+output = {
+  type: 'string',
+  format: 'email'
+}
+```
+Note: Check which formats are available with your JSON Schema
+implementation before using this.
+
+
+Specifying min and max length:
+```js
+ms.string({minLength: 3, maxLength: 50})
+
+output = {
+  type: 'string',
+  minLength: 3,
+  maxLength: 50
+}
+```
+
 Setting the required flag (only possible within an object):
 ```js
 ms.obj({
