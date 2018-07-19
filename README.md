@@ -1,6 +1,6 @@
 <p align="right">
-  <a href="https://travis-ci.org/upfrontIO/microschema">
-    <img alt="Travis" src="https://img.shields.io/travis/upfrontIO/microschema/master.svg">
+  <a href="https://travis-ci.org/livingdocsIO/microschema">
+    <img alt="Travis" src="https://img.shields.io/travis/livingdocsIO/microschema/master.svg">
   </a>
   <a href="https://www.npmjs.com/package/microschema">
     <img alt="npm latest version" src="https://img.shields.io/npm/v/microschema/latest.svg">

@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/upfrontIO/microschema"
+    "url": "https://github.com/livingdocsIO/microschema"
   },
   "scripts": {
     "test": "ava test.js && eslint .",
