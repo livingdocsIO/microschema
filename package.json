@@ -30,5 +30,8 @@
   },
   "ava": {
     "failWithoutAssertions": false
+  },
+  "release": {
+    "extends": "@livingdocs/semantic-release-presets/npm-github"
   }
 }
