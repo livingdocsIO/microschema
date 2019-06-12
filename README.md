@@ -268,3 +268,68 @@ output = {
   const: 'foo'
 }
 ```
+
+## anyOf / oneOf / allOf
+
+```js
+ms.anyOf('number', ms.obj({foo: 'string'}))
+
+output = {
+  anyOf: [
+    {type: 'number'},
+    {
+      type: 'object',
+      properties: {
+        foo: {type: 'string'}
+      }
+    }
+  ]
+}
+```
+Note: you can also pass an array as the first argument
+
+
+## $id / $ref
+
+```js
+ms.$id('#user').obj({
+  name: 'string',
+  friend: ms.$ref('#user')
+})
+
+output = {
+  $id: '#user',
+  type: 'object',
+  properties: {
+    name: {type: 'string'}
+    friend: {$ref: '#user'}
+  }
+}
+```
+
+## definitions
+
+```js
+ms.definitions({
+  user: ms.obj({name: 'string'})
+}).obj({
+  name: 'string',
+  friend: ms.$ref('#/definitions/user')
+})
+
+output = {
+  definitions: {
+    user: {
+      type: 'object',
+      properties: {
+        name: {type: 'string'}
+      }
+    }
+  }
+  type: 'object',
+  properties: {
+    name: {type: 'string'}
+    friend: {$ref: '#/definitions/user'}
+  }
+}
+```
