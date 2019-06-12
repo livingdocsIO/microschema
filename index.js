@@ -1,6 +1,6 @@
 // Symbols
-const isChain = Symbol('chainedMicroschema')
 const isRequired = Symbol('required')
+const chained = Symbol('chained')
 
 // Helper library to create JsonSchemas
 // in a concise way.
@@ -17,16 +17,16 @@ const isRequired = Symbol('required')
 //     scope: 'string'
 //   }))
 // })
+
 module.exports = {
 
   // Chaining Properties
   // -------------------
 
   get required () {
-    const chain = Object.create(this)
-    chain[isChain] = true
-    chain[isRequired] = true
-    return chain
+    const self = chain(this)
+    self[isRequired] = true
+    return self
   },
 
 
@@ -66,7 +66,7 @@ module.exports = {
       jsonSchema.properties[propertyName] = propertySchema
     }
 
-    return this.decorate(jsonSchema)
+    return decorate(this, jsonSchema)
   },
 
   // An object with no additional properties allowed
@@ -84,7 +84,7 @@ module.exports = {
   enum (...enums) {
     if (Array.isArray(enums[0])) enums = enums[0]
 
-    return this.decorate({
+    return decorate(this, {
       type: getJsonType(enums[0]),
       enum: enums
     })
@@ -92,7 +92,7 @@ module.exports = {
 
 
   const (value) {
-    return this.decorate({
+    return decorate(this, {
       type: getJsonType(value),
       const: value
     })
@@ -105,10 +105,10 @@ module.exports = {
   //  2. {Object} JSON Schema
   //     Example: microschema.arrayOf({type: 'object', properties: {...}})
   arrayOf (schemaOrType, {minItems, maxItems, uniqueItems} = {}) {
-    const items = isString(schemaOrType) ? {type: schemaOrType} : schemaOrType
-    const s = this.decorate({
+    const itemSchema = strToSchema(schemaOrType)
+    const s = decorate(this, {
       type: 'array',
-      items: items
+      items: itemSchema
     })
 
     if (minItems) s.minItems = minItems
@@ -135,7 +135,7 @@ module.exports = {
     if (minLength) s.minLength = minLength
     if (maxLength) s.maxLength = maxLength
 
-    return this.decorate(s)
+    return decorate(this, s)
   },
 
   number ({min, max, integer} = {}) {
@@ -143,7 +143,7 @@ module.exports = {
     const s = {type: type}
     if (min != null) s.minimum = min
     if (max != null) s.maximum = max
-    return this.decorate(s)
+    return decorate(this, s)
   },
 
   integer (opts = {}) {
@@ -152,13 +152,45 @@ module.exports = {
   },
 
   boolean () {
-    return this.decorate({type: 'boolean'})
+    return decorate(this, {type: 'boolean'})
   },
 
-  decorate (obj) {
-    if (this[isRequired]) obj[isRequired] = true
-    return obj
+  definitions (obj) {
+    const self = chain(this)
+    self[chained].definitions = obj
+    return self
+  },
+
+  $ref (reference) {
+    return decorate(this, {$ref: reference})
+  },
+
+  $id (id) {
+    const self = chain(this)
+    self[chained].$id = id
+    return self
+  },
+
+  anyOf (...args) {
+    const defs = Array.isArray(args[0]) ? args[0] : args
+    return decorate(this, {anyOf: defs.map(strToSchema)})
+  },
+
+  oneOf (...args) {
+    const defs = Array.isArray(args[0]) ? args[0] : args
+    return decorate(this, {oneOf: defs.map(strToSchema)})
+  },
+
+  allOf (...args) {
+    const defs = Array.isArray(args[0]) ? args[0] : args
+    return decorate(this, {allOf: defs})
   }
+}
+
+function decorate (self, obj) {
+  if (self[isRequired]) obj[isRequired] = true
+  if (self[chained]) Object.assign(obj, self[chained])
+  return obj
 }
 
 function parseTypeDescription (parentSchema, name, typeDesc) {
@@ -182,6 +214,17 @@ function parseTypeDescription (parentSchema, name, typeDesc) {
   }
 
   return propertySchema
+}
+
+function strToSchema (schemaOrType) {
+  return isString(schemaOrType) ? {type: schemaOrType} : schemaOrType
+}
+
+function chain (self) {
+  if (self[chained]) return self
+  self = Object.create(self)
+  self[chained] = {}
+  return self
 }
 
 function getJsonType (obj) {

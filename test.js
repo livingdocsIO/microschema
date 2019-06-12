@@ -240,6 +240,180 @@ test('boolean() creates a type boolean', function (t) {
   assert.deepEqual(schema, {type: 'boolean'})
 })
 
+test('$ref() creates a reference', function (t) {
+  const schema = ms.$ref('#/definitions/address')
+  assert.deepEqual(schema, {$ref: '#/definitions/address'})
+})
+
+test('definitions() adds definitions', function (t) {
+  const schema = ms.definitions({
+    check: ms.boolean()
+  }).strictObj({
+    foo: ms.required.$ref('#/definitions/check')
+  })
+
+  assert.deepEqual(schema, {
+    definitions: {
+      check: {type: 'boolean'}
+    },
+    type: 'object',
+    properties: {
+      foo: {$ref: '#/definitions/check'}
+    },
+    required: [ 'foo' ],
+    additionalProperties: false
+  })
+})
+
+test('$id() creates an id', function (t) {
+  const schema = ms.$id('#node').obj({
+    children: ms.$ref('#node')
+  })
+  assert.deepEqual(schema, {
+    $id: '#node',
+    type: 'object',
+    properties: {
+      children: {$ref: '#node'}
+    }
+  })
+})
+
+test('anyOf() creates an anyOf object', function (t) {
+  const schema = ms.anyOf(
+    ms.obj({
+      foo: 'string'
+    }),
+    ms.obj({
+      bar: 'string'
+    })
+  )
+
+  assert.deepEqual(schema, {
+    anyOf: [{
+      type: 'object',
+      properties: {foo: {type: 'string'}}
+    }, {
+      type: 'object',
+      properties: {bar: {type: 'string'}}
+    }]
+  })
+})
+
+test('anyOf() works with strings', function (t) {
+  const schema = ms.anyOf('string', 'boolean')
+
+  assert.deepEqual(schema, {
+    anyOf: [
+      {type: 'string'},
+      {type: 'boolean'}
+    ]
+  })
+})
+
+test('anyOf() works when passed an array', function (t) {
+  const schema = ms.anyOf([
+    ms.obj({
+      foo: 'string'
+    }),
+    ms.obj({
+      bar: 'string'
+    })
+  ])
+
+  assert.deepEqual(schema, {
+    anyOf: [{
+      type: 'object',
+      properties: {foo: {type: 'string'}}
+    }, {
+      type: 'object',
+      properties: {bar: {type: 'string'}}
+    }]
+  })
+})
+
+test('anyOf() works with required', function (t) {
+  const schema = ms.obj({
+    any: ms.required.anyOf(
+      ms.obj({
+        foo: ms.required.string()
+      }),
+      ms.obj({
+        bar: 'string'
+      })
+    )
+  })
+
+  assert.deepEqual(schema, {
+    type: 'object',
+    required: ['any'],
+    properties: {
+      any: {
+        anyOf: [{
+          type: 'object',
+          required: ['foo'],
+          properties: {foo: {type: 'string'}}
+        }, {
+          type: 'object',
+          properties: {bar: {type: 'string'}}
+        }]
+      }
+    }
+  })
+})
+
+test('oneOf() creates a oneOf object', function (t) {
+  const schema = ms.oneOf(
+    ms.obj({
+      foo: 'string'
+    }),
+    ms.obj({
+      bar: 'string'
+    })
+  )
+
+  assert.deepEqual(schema, {
+    oneOf: [{
+      type: 'object',
+      properties: {foo: {type: 'string'}}
+    }, {
+      type: 'object',
+      properties: {bar: {type: 'string'}}
+    }]
+  })
+})
+
+test('oneOf() works with strings', function (t) {
+  const schema = ms.oneOf('number', 'boolean')
+
+  assert.deepEqual(schema, {
+    oneOf: [
+      {type: 'number'},
+      {type: 'boolean'}
+    ]
+  })
+})
+
+test('allOf() creates a allOf object', function (t) {
+  const schema = ms.allOf(
+    ms.obj({
+      foo: 'string'
+    }),
+    ms.obj({
+      bar: 'string'
+    })
+  )
+
+  assert.deepEqual(schema, {
+    allOf: [{
+      type: 'object',
+      properties: {foo: {type: 'string'}}
+    }, {
+      type: 'object',
+      properties: {bar: {type: 'string'}}
+    }]
+  })
+})
+
 test('chaining creates a chain object', function (t) {
   const chain = ms.required
   assert.ok(chain.strictObj instanceof Function)
