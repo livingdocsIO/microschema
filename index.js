@@ -155,6 +155,10 @@ module.exports = {
     return decorate(this, {type: 'boolean'})
   },
 
+  null () {
+    return decorate(this, {type: 'null'})
+  },
+
   definitions (obj) {
     const self = chain(this)
     self[chained].definitions = obj

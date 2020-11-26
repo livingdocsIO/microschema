@@ -240,6 +240,23 @@ test('boolean() creates a type boolean', function (t) {
   assert.deepEqual(schema, {type: 'boolean'})
 })
 
+test('null() creates a null type', function (t) {
+  const schema = ms.null()
+  assert.deepEqual(schema, {type: 'null'})
+})
+
+test('null() can be parsed as string', function (t) {
+  const schema = ms.obj({
+    foo: 'null'
+  })
+  assert.deepEqual(schema, {
+    type: 'object',
+    properties: {
+      foo: {type: 'null'}
+    }
+  })
+})
+
 test('$ref() creates a reference', function (t) {
   const schema = ms.$ref('#/definitions/address')
   assert.deepEqual(schema, {$ref: '#/definitions/address'})

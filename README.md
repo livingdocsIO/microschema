@@ -179,6 +179,13 @@ output = {
 }
 ```
 
+## Null
+
+```js
+ms.null()
+output = {type: 'null'})
+```
+
 ## Objects
 
 ```js
