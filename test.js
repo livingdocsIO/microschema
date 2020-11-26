@@ -257,6 +257,54 @@ test('null() can be parsed as string', function (t) {
   })
 })
 
+test('types() can create composite types from strings', function (t) {
+  const schema = ms.types('string', 'null')
+  assert.deepEqual(schema, {type: ['string', 'null']})
+})
+
+test('types() works with required', function (t) {
+  const schema = ms.obj({
+    foo: ms.required.types('string', 'null')
+  })
+  assert.deepEqual(schema, {
+    type: 'object',
+    required: ['foo'],
+    properties: {
+      foo: {
+        type: ['string', 'null']
+      }
+    }
+  })
+})
+
+test('types() can create composite types', function (t) {
+  const schema = ms.types(ms.string(), ms.null())
+  assert.deepEqual(schema, {type: ['string', 'null']})
+})
+
+test('types() can create composite types with configs', function (t) {
+  const schema = ms.types(ms.enum('foo'), ms.number({min: 0}))
+  assert.deepEqual(schema, {
+    type: ['string', 'number'],
+    enum: ['foo'],
+    minimum: 0
+  })
+})
+
+test('types() can create composite types with one object', function (t) {
+  const schema = ms.types(ms.number({min: 0}), ms.obj({
+    foo: 'string:required'
+  }))
+  assert.deepEqual(schema, {
+    type: ['number', 'object'],
+    minimum: 0,
+    required: ['foo'],
+    properties: {
+      foo: {type: 'string'}
+    }
+  })
+})
+
 test('$ref() creates a reference', function (t) {
   const schema = ms.$ref('#/definitions/address')
   assert.deepEqual(schema, {$ref: '#/definitions/address'})

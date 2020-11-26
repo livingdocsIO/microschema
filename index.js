@@ -159,6 +159,18 @@ module.exports = {
     return decorate(this, {type: 'null'})
   },
 
+  types (...params) {
+    const result = {}
+    for (let obj of params) {
+      if (isString(obj)) {
+        obj = parseTypeDescription({}, '', obj)
+      }
+      mergeTypes(obj, result)
+      Object.assign(result, obj)
+    }
+    return decorate(this, result)
+  },
+
   definitions (obj) {
     const self = chain(this)
     self[chained].definitions = obj
@@ -195,6 +207,20 @@ function decorate (self, obj) {
   if (self[isRequired]) obj[isRequired] = true
   if (self[chained]) Object.assign(obj, self[chained])
   return obj
+}
+
+function mergeTypes (obj, other) {
+  if (obj.type && other.type) {
+    const first = Array.isArray(obj.type)
+      ? obj.type
+      : [obj.type]
+    const second = Array.isArray(other.type)
+      ? other.type
+      : [other.type]
+
+    second.push(...first)
+    obj.type = second
+  }
 }
 
 function parseTypeDescription (parentSchema, name, typeDesc) {

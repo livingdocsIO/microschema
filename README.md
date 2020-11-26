@@ -273,6 +273,22 @@ output = {
 }
 ```
 
+## Combining Types
+
+```js
+ms.types('string', 'number')
+output = {
+  type: ['string', 'number']
+}
+
+ms.types(ms.string({format: 'uri'}), ms.number({min: 0}))
+output = {
+  type: ['string', 'number'],
+  format: 'uri',
+  minimum: 0
+}
+```
+
 ## anyOf / oneOf / allOf
 
 ```js
