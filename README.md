@@ -208,19 +208,55 @@ output = {
 }
 ```
 
-Add title and description:
+Add `title` and `description` annotations to the schema:
 ```js
 ms.obj({
   displayName: 'string',
 }, {title: 'Title', description: 'Desc.'})
+
+output = {
+  type: 'object',
+  title: 'Title',
+  description: 'Desc.',
+  properties: {
+    displayName: {type: 'string'}
+  }
+}
 ```
 
-Add dependencies:
+Add `dependencies`:
 ```js
 ms.obj({
   creditCard: 'string',
   address: 'string'
 }, {dependencies: {creditCard: 'address'}})
+
+output = {
+  type: 'object',
+  properties: {
+    creditCard: {type: 'string'},
+    address: {type: 'string'}
+  },
+  dependencies: {
+    creditCard: ['address']
+  }
+}
+```
+
+Set a `default` value in case the property is absent:
+```js
+ms.obj({
+  creditCard: 'string',
+  address: 'string'
+}, {default: {}})
+
+output = {
+  type: 'object',
+  default: {},
+  properties: {
+    count: {type: 'integer'}
+  }
+}
 ```
 
 
