@@ -33,20 +33,21 @@ module.exports = {
   // Methods
   // -------
 
-  obj (microschema = {}, {strict, required, title, description, dependencies} = {}) {
+  obj (microschema = {}, opts = {}) {
     const jsonSchema = {
       type: 'object',
       properties: {}
     }
 
-    if (title) jsonSchema.title = title
-    if (description) jsonSchema.description = description
-    if (strict) jsonSchema.additionalProperties = false
-    if (dependencies) setDependencies(jsonSchema, dependencies)
+    if (opts.title) jsonSchema.title = opts.title
+    if (opts.description) jsonSchema.description = opts.description
+    if (opts.strict) jsonSchema.additionalProperties = false
+    if (opts.dependencies) setDependencies(jsonSchema, opts.dependencies)
+    if (opts.default !== undefined) jsonSchema.default = opts.default
 
-    if (required) {
-      if (!Array.isArray(required)) throw new Error("'required' must be an array")
-      jsonSchema.required = required
+    if (opts.required) {
+      if (!Array.isArray(opts.required)) throw new Error("'required' must be an array")
+      jsonSchema.required = opts.required
     }
 
     for (const propertyName in microschema) {

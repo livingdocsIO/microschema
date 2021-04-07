@@ -40,6 +40,20 @@ test('obj() creates an object with dependencies', function (t) {
   })
 })
 
+test('obj() supports a default value', function (t) {
+  const schema = ms.obj({
+    foo: 'string'
+  }, {default: {foo: 'bar'}})
+
+  assert.deepEqual(schema, {
+    type: 'object',
+    default: {foo: 'bar'},
+    properties: {
+      foo: {type: 'string'}
+    }
+  })
+})
+
 test('strictObj() creates an object with a single property', function (t) {
   const schema = ms.strictObj({foo: 'string'})
 
