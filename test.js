@@ -115,8 +115,20 @@ test('enum() creates an enum from an array', function (t) {
 test('const() creates a const value', function (t) {
   const schema = ms.const('foo')
   assert.deepEqual(schema, {
-    type: 'string',
     const: 'foo'
+  })
+})
+
+test('const() creates a required const value', function (t) {
+  const schema = ms.obj({
+    foo: ms.required.const('bar')
+  })
+  assert.deepEqual(schema, {
+    type: 'object',
+    required: ['foo'],
+    properties: {
+      foo: {const: 'bar'}
+    }
   })
 })
 
