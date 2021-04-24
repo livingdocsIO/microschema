@@ -94,7 +94,6 @@ module.exports = {
 
   const (value) {
     return decorate(this, {
-      type: getJsonType(value),
       const: value
     })
   },
