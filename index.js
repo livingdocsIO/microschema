@@ -23,6 +23,12 @@ module.exports = {
   // Chaining Properties
   // -------------------
 
+  /**
+   * Sets a property as required
+   * @example
+   *    ms.obj({id: ms.required.string()})
+   *    -> {type: 'object', properties: {id: {type: 'string'}}, required: ['id']}
+   */
   get required () {
     const self = chain(this)
     self[isRequired] = true
@@ -33,6 +39,16 @@ module.exports = {
   // Methods
   // -------
 
+  /**
+   * Creates an object schema.
+   * @param {Object} microschema
+   * @param {Object} opts
+   * @param {string} opts.title
+   * @param {string} opts.description
+   * @param {string} opts.dependencies
+   * @param {*} opts.default
+   * @param {string[]} opts.required
+   */
   obj (microschema = {}, opts = {}) {
     const jsonSchema = {
       type: 'object',
@@ -70,18 +86,27 @@ module.exports = {
     return decorate(this, jsonSchema)
   },
 
-  // An object with no additional properties allowed
-  strictObj (microschema = {}, options = {}) {
-    options.strict = true
-    return this.obj(microschema, options)
+  /**
+   * Creates an object schema with additionalProperties: false
+   * @param {Object} microschema
+   * @param {Object} opts
+   * @param {?string} opts.title
+   * @param {?string} opts.description
+   * @param {?string} opts.dependencies
+   * @param {*} opts.default
+   * @param {string[]} opts.required
+   */
+  strictObj (microschema = {}, opts = {}) {
+    opts.strict = true
+    return this.obj(microschema, opts)
   },
 
-  // @param ...
-  //   Pass in all possible values as separate parameters.
-  //   All values must be of the same type.
-  //
-  //   Example:
-  //   microschema.enum('error', 'warn', 'info', 'debug', 'trace')
+  /**
+   * Pass in all possible values as separate parameters.
+   * All values must be of the same type.
+   *
+   * @example microschema.enum('error', 'warn', 'info', 'debug', 'trace')
+   */
   enum (...enums) {
     if (Array.isArray(enums[0])) enums = enums[0]
 
@@ -91,34 +116,53 @@ module.exports = {
     })
   },
 
-
+  /**
+   * Declares a const schema
+   */
   const (value) {
     return decorate(this, {
       const: value
     })
   },
 
-  // @param schemaOrType
-  //  Pass in either a string or an object:
-  //  1. {String} A json schema type. E.g. 'string'
-  //     Example: microschema.arrayOf('string')
-  //  2. {Object} JSON Schema
-  //     Example: microschema.arrayOf({type: 'object', properties: {...}})
-  arrayOf (schemaOrType, {minItems, maxItems, uniqueItems} = {}) {
+  /**
+   * @param schemaOrType
+   *   Pass in either a string or an object:
+   *   1. {String} A json schema type. E.g. 'string'
+   *      Example: microschema.arrayOf('string')
+   *   2. {Object} JSON Schema
+   *      Example: microschema.arrayOf({type: 'object', properties: {...}})
+   * @param {Object} opts
+   * @param {?number} opts.minItems
+   * @param {?number} opts.maxItems
+   * @param {?boolean} opts.uniqueItems
+   */
+  arrayOf (schemaOrType, opts) {
     const itemSchema = strToSchema(schemaOrType)
     const s = decorate(this, {
       type: 'array',
       items: itemSchema
     })
 
-    if (minItems) s.minItems = minItems
-    if (maxItems) s.maxItems = maxItems
-    if (uniqueItems) s.uniqueItems = uniqueItems
+    const {minItems, maxItems, uniqueItems} = opts || {}
+    if (minItems !== undefined) s.minItems = minItems
+    if (maxItems !== undefined) s.maxItems = maxItems
+    if (uniqueItems !== undefined) s.uniqueItems = uniqueItems
 
     return s
   },
 
-  string ({pattern, format, minLength, maxLength} = {}) {
+  /**
+   * Declares a string schema
+   * @param {Object} opts
+   * @param {?RegExp|string} opts.pattern A regex instance or string to validate against
+   * @param {?string} opts.format A json schema string format
+   * @param {?number} opts.minLength The minimum length of the string
+   * @param {?number} opts.maxLength The maximum length of the string
+   */
+  string (opts) {
+    const {pattern, format, minLength, maxLength} = opts || {}
+
     const s = {type: 'string'}
     if (pattern) {
       if (pattern instanceof RegExp) {
@@ -138,7 +182,14 @@ module.exports = {
     return decorate(this, s)
   },
 
-  number ({min, max, integer} = {}) {
+  /**
+   * @param {Object} opts
+   * @param {?number} opts.min
+   * @param {?number} opts.max
+   * @param {?boolean} opts.integer
+   */
+  number (opts) {
+    const {min, max, integer} = opts || {}
     const type = integer ? 'integer' : 'number'
     const s = {type: type}
     if (min != null) s.minimum = min
@@ -146,9 +197,13 @@ module.exports = {
     return decorate(this, s)
   },
 
-  integer (opts = {}) {
-    opts.integer = true
-    return this.number(opts)
+  /**
+   * @param {Object} opts
+   * @param {?number} opts.min
+   * @param {?number} opts.max
+   */
+  integer (opts) {
+    return this.number({...opts, integer: true})
   },
 
   boolean () {
@@ -177,10 +232,33 @@ module.exports = {
     return self
   },
 
+  /**
+   * Declares a {$ref: reference} schema.
+   * @param {string} reference JSON Schema reference
+   */
   $ref (reference) {
     return decorate(this, {$ref: reference})
   },
 
+  /**
+   * Adds a schema $id attribute
+   * @param {string} id
+   * @example
+   *    ms.$id('user').strictObj({
+   *      id: 'string:required',
+   *      name: 'string:required'
+   *    })
+   *    -> {
+   *      $id: 'user',
+   *      type: 'object',
+   *      required: ['id', 'name'],
+   *      additionalProperties: false,
+   *      properties: {
+   *        id: {type: 'string'},
+   *        name: {type: 'string'}
+   *      }
+   *    }
+   */
   $id (id) {
     const self = chain(this)
     self[chained].$id = id
