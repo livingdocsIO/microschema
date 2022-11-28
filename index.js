@@ -310,6 +310,10 @@ function parseTypeDescription (parentSchema, name, typeDesc) {
       propertySchema.format = 'uri'
     }
 
+    if (option === 'date-time') {
+      propertySchema.format = 'date-time'
+    }
+
     if (option === 'required') {
       parentSchema.required = parentSchema.required || []
       parentSchema.required.push(name)
