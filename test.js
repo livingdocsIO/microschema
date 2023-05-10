@@ -1,5 +1,6 @@
+'use strict'
 const ms = require('./index')
-const test = require('ava').test
+const {test} = require('node:test')
 const assert = require('assert')
 
 test('obj() creates an object with title and description', function (t) {

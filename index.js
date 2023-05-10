@@ -1,3 +1,4 @@
+'use strict'
 // Symbols
 const isRequired = Symbol('required')
 const chained = Symbol('chained')

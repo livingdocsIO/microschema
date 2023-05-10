@@ -6,26 +6,18 @@ clone:
   depth: 50
 
 steps:
-- name: npm-install
-  image: node:8-alpine
-  commands: ["npm install"]
-
 - name: eslint
-  image: marcbachmann/eslint:4.19.1
+  image: marcbachmann/eslint:8.0.1
   environment:
     GH_TOKEN:
       from_secret: GH_TOKEN
 
-- name: test-node-8
-  image: node:8-alpine
-  commands: ["npm run test:ci -s"]
-
-- name: test-node-10
-  image: node:10-alpine
-  commands: ["npm run test:ci -s"]
+- name: test-node-20
+  image: node:20-alpine
+  commands: ["npm ci", "npm run test:ci -s"]
 
 - name: release
-  image: livingdocs/semantic-release:v1.2.2
+  image: livingdocs/semantic-release:v2.1.1
   environment:
     GH_TOKEN:
       from_secret: GH_TOKEN
@@ -36,6 +28,6 @@ trigger:
   event: [push]
 ---
 kind: signature
-hmac: e4150b2f35cc0005e9ba5dfad0b264333b11ee7d0f072d56ecb108f6aa101bdb
+hmac: 28b529dd41118ca7a97ad5eb5f8eb13ae06e232828fe09bc090d06ca070456aa
 
 ...
