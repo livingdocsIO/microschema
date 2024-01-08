@@ -1,12 +1,3 @@
-<p align="right">
-  <a href="https://bundlephobia.com/result?p=microschema">
-    <img alt="Travis" src="https://badgen.net/bundlephobia/minzip/microschema">
-  </a>
-  <a href="https://www.npmjs.com/package/microschema">
-    <img alt="npm latest version" src="https://img.shields.io/npm/v/microschema/latest.svg">
-  </a>
-</p>
-
 # microschema
 
 Small library without dependencies to create JSON Schemas in a concise way.
