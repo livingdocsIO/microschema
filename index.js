@@ -137,6 +137,7 @@ module.exports = {
    * @param {?number} opts.minItems
    * @param {?number} opts.maxItems
    * @param {?boolean} opts.uniqueItems
+   * @param {?string[]} opts.uniqueItemProperties
    */
   arrayOf (schemaOrType, opts) {
     const itemSchema = strToSchema(schemaOrType)
@@ -145,10 +146,11 @@ module.exports = {
       items: itemSchema
     })
 
-    const {minItems, maxItems, uniqueItems} = opts || {}
+    const {minItems, maxItems, uniqueItems, uniqueItemProperties} = opts || {}
     if (minItems !== undefined) s.minItems = minItems
     if (maxItems !== undefined) s.maxItems = maxItems
     if (uniqueItems !== undefined) s.uniqueItems = uniqueItems
+    if (uniqueItemProperties !== undefined) s.uniqueItemProperties = uniqueItemProperties
 
     return s
   },
